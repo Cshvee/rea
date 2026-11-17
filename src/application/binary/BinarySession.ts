@@ -223,6 +223,11 @@ export class BinarySession
     this.#bundleResourceFactory = bundleResourceFactory;
   }
 
+  /** Create an isolated session over this session's auxiliary providers. */
+  createManagedBinarySession(): BinarySession {
+    return new BinarySession(this.#providerRouter.auxiliaryOnly());
+  }
+
   /** Open an app resource root without requiring CFBundleExecutable. */
   openBundleResources(
     path: string,
@@ -392,10 +397,6 @@ export class BinarySession
     if (operation === "decompile_all") return false;
     if (this.#activeBundleResources !== undefined) return false;
     return routeAllowsSnapshotReplay(this.#active?.route, operation);
-  }
-
-  invalidateSnapshotForExternalMutation(): void {
-    this.invalidateSnapshot();
   }
 
   /** Return the selected immutable profile, optionally scoped to an operation. */
